@@ -1,19 +1,19 @@
 import socket
 import threading
+import time
 
 class Jogo_Conexao:
     
     def __init__(self):
-        self.udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_info = None
+        self.achou = False
     
-    def hostear_jogo(self, handle_conexao):
+    def hostear_jogo(self, other):
         print("Iniciando servidor...")
-        self.notificar()
+        self.recebe_notifica()
         
         endereco = socket.gethostbyname(socket.gethostname())
-        server = self.tcp_socket
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind((endereco, 7000))
         
         server.listen(1)
@@ -21,28 +21,28 @@ class Jogo_Conexao:
         cliente, cliente_end = server.accept()
         print("Um jogador se conectou")
         
-        threading.Thread(target=handle_conexao, args=(cliente,))
-        
+        threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
         server.close()
+
         
-    def conectar_jogo(self, handle_conexao):
+    def conectar_jogo(self, other):
         self.procurar_servidor()
         
-        resp = input(f"Deseja se conectar ao servidor {self.server_info[0]}? (s/n) ")
+        resp = input(f"Deseja se conectar ao servidor {self.server_info[0]}?(s/n) ")
 
         if resp == "n":
             return
         else:
-            cliente = self.tcp_socket
-            cliente.connect(self.server_info)
+            cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            cliente.connect((self.server_info[0], 7000))
             
-            threading.Thread(target=handle_conexao, args=(cliente,)).start()
+            threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
                 
-    def notificar(self):
+    def recebe_notifica(self):
         info_server = (('', 7007))
         mensagem = "tem eu"
         
-        server = self.udp_socket 
+        server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
         server.bind(info_server)
         
         while True:
@@ -57,34 +57,29 @@ class Jogo_Conexao:
         print("Procurando servidor...")
         
         mensagem = "algum servidor ai?"
-        achou = False
+
+        cliente = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
-        cliente = self.udp_socket
+        cliente.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        cliente.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         
-        cliente.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        cliente.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-        
-        threading.Thread(target=verifica_mensagem_recebida).start()
+        threading.Thread(target=self.verifica_mensagem_recebida_cliente, args=(cliente,)).start()
         
         while True:
-            cliente.sendto(mensagem.encode(), ('255.255.255.255', 7007))
-            sleep(2)
+            cliente.sendto(mensagem.encode("utf-8"), ('255.255.255.255', 7007))
+            time.sleep(2)
             
-            if achou:
+            if self.achou:
                 break
-            
-            tentativas += 1
         
-    def verifica_mensagem_recebida(self):
-        cliente = self.udp_socket
-        
+    def verifica_mensagem_recebida_cliente(self, cliente):        
         while True:
             dados, endereco = cliente.recvfrom(4096)
             dados = str(dados.decode('utf-8'))
             
             if dados == "tem eu":
-                achou = True
-                self.server_info
+                self.achou = True
+                self.server_info = endereco
                 print(f"Servidor {endereco[0]} encontrado")
                 cliente.close()
                 break;
