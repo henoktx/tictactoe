@@ -36,9 +36,9 @@ class Game:
                 jogada = input("Faça uma jogada (quadro, linha, coluna): ")
                 
                 if self.jogada_valida(jogada.split(',')):
+                    jogador.send(jogada.encode('utf-8'))
                     self.gerencia_jogadas(jogada.split(','), self.voce)
                     self.vez = self.oponente
-                    jogador.send(jogada.encode('utf-8'))
                 else:
                     print("Jogada inválida :|\n")
             else:
