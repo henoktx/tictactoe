@@ -9,7 +9,7 @@ class Jogo_Conexao:
         self.achou = False
     
     def hostear_jogo(self, other):
-        print("Iniciando servidor...")
+        print("\nIniciando servidor...")
         self.recebe_notifica()
         
         endereco = socket.gethostbyname(socket.gethostname())
@@ -19,7 +19,7 @@ class Jogo_Conexao:
         server.listen(1)
         
         cliente, cliente_end = server.accept()
-        print("Um jogador se conectou")
+        print(f"Um jogador se conectou ({cliente_end})")
         
         threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
         server.close()
@@ -54,7 +54,7 @@ class Jogo_Conexao:
                 break;
                
     def procurar_servidor(self):
-        print("Procurando servidor...")
+        print("\nProcurando servidor...")
         
         mensagem = "algum servidor ai?"
 
