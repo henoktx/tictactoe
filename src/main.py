@@ -1,4 +1,4 @@
-import tictactoe
+from game_logic import tictactoe
 
 jogo = tictactoe.Game()
 

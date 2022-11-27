@@ -1,5 +1,5 @@
+from connection import game_connection
 import socket
-import game_connection
 
 class Game:
     
