@@ -29,9 +29,10 @@ class Game:
         self.conexao.conectar_jogo(self)
         
     def handle_conexao(self, jogador):
+        self.instrucoes()
+        
         while not self.acabou:
             if self.vez == self.voce:
-                print("\n")
                 jogada = input("Faça uma jogada (quadro, linha, coluna): ")
                 
                 if self.jogada_valida(jogada.split(',')):
@@ -39,7 +40,7 @@ class Game:
                     self.vez = self.oponente
                     jogador.send(jogada.encode('utf-8'))
                 else:
-                    print("Jogada inválida")
+                    print("Jogada inválida :|\n")
             else:
                 dados = jogador.recv(4092)
                 if not dados:
@@ -74,7 +75,19 @@ class Game:
         
             
     def jogada_valida(self, jogada):
-        return self.quadro[int(jogada[0])][int(jogada[1])][int(jogada[2])] == " "
+        try:
+            quadro = int(jogada[0])
+            linha = int(jogada[1])
+            coluna = int(jogada[2])
+            
+            if quadro > 3 | linha > 3 | coluna > 3:
+                return False
+            elif self.quadro[int(jogada[0])][int(jogada[1])][int(jogada[2])] != " ":
+                return False
+            else:
+                return True
+        except:
+            return False
     
     def verifica_vitoria(self):
         for quadro in range(4):    
@@ -131,9 +144,18 @@ class Game:
         return False
     
     def desenhar_quadros(self):
+        print(" ")
         for quadro in range(4):
             for linha in range(4):
                 print(' | '.join(self.quadro[quadro][linha]))
                 if linha != 3:
                     print("--------------")
             print("\n")
+            
+    def instrucoes(self):
+        print("\nInstruções:\n")
+        print("\t→ Use sempre as jogadas no formato 'quadro,linha,coluna'\n")
+        print("\t→ Sempre quando for contar comece pelo 0\n")
+        print("\t→ Ganha quem colocar 4 marcadares horizontalmente, ou verticalmente, ou diagonalmente") 
+        print("\tno mesmo quadro ou combinando-os em sequencia, ou na mesma posicao em quadros diferentes\n")
+        print("\t→ Bom jogo!\n")
