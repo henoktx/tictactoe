@@ -19,7 +19,7 @@ class Jogo_Conexao:
         server.listen(1)
         
         cliente, cliente_end = server.accept()
-        print(f"Um jogador se conectou ({cliente_end})")
+        print(f"Um jogador se conectou ({cliente_end[0]})")
         
         threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
         server.close()
@@ -28,13 +28,13 @@ class Jogo_Conexao:
     def conectar_jogo(self, other):
         self.procurar_servidor()
         
-        resp = input(f"Deseja se conectar ao servidor {self.server_info[0]}?(s/n) ")
+        resp = input(f"Deseja se conectar ao servidor {self.server_info}?(s/n) ")
 
         if resp == "n":
             return
         else:
             cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            cliente.connect((self.server_info[0], 7000))
+            cliente.connect((self.server_info, 7000))
             
             threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
                 
@@ -79,7 +79,7 @@ class Jogo_Conexao:
             
             if dados == "tem eu":
                 self.achou = True
-                self.server_info = endereco
+                self.server_info = endereco[0]
                 print(f"Servidor {endereco[0]} encontrado")
                 cliente.close()
                 break;
