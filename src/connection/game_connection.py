@@ -59,6 +59,9 @@ class Jogo_Conexao:
             
             if dados == "algum servidor ai?":
                 server.sendto(mensagem.encode(), endereco)
+                time.sleep(10)
+                
+        server.close()
                
     def procurar_servidor(self):
         print("\nProcurando servidor...")
