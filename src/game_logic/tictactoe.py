@@ -5,10 +5,8 @@ import os
 class Game:
     
     def __init__(self):
-        self.quadro = [[[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
-                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
-                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
-                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]]]
+        self.quadro = []
+        self.carregar_quadro()
         self.vez = "X"
         self.voce = "X"
         self.oponente = "O"
@@ -33,27 +31,45 @@ class Game:
     def handle_conexao(self, jogador):
         self.instrucoes()
         
-        while not self.vitoria | self.velha:
-            if self.vez == self.voce:
-                jogada = input("Faça uma jogada (quadro, linha, coluna): ")
-                
-                if self.jogada_valida(jogada.split(',')):
-                    jogador.send(jogada.encode('utf-8'))
-                    os.system("clear")
-                    self.gerencia_jogadas(jogada.split(','), self.voce)
-                    self.vez = self.oponente
+        while True:
+            if not self.vitoria | self.velha:    
+                if self.vez == self.voce:
+                    jogada = input("Faça uma jogada (quadro, linha, coluna): ")
+                    
+                    if self.jogada_valida(jogada.split(',')):
+                        jogador.send(jogada.encode('utf-8'))
+                        os.system("clear")
+                        self.gerencia_jogadas(jogada.split(','), self.voce)
+                        self.vez = self.oponente
+                    else:
+                        print("Jogada inválida :|\n")
                 else:
-                    print("Jogada inválida :|\n")
+                    dados = jogador.recv(4092)
+                    if not dados:
+                        print("Vixe!")
+                        break
+                    else:
+                        print("Jogada do oponente:")
+                        self.gerencia_jogadas(dados.decode('utf-8').split(','), self.oponente)
+                        self.vez = self.voce
             else:
-                dados = jogador.recv(4092)
-                if not dados:
-                    print("Vixe!")
+                resp = input("\nDeseja iniciar um novo jogo?(s/n) ")
+                if resp == "s":
+                    jogador.send("s".encode("utf-8"))
+                    if jogador.recv(4092).decode("utf-8") == "s":
+                        os.system("clear")
+                        self.novo_jogo()
+                        print("Novo jogo começando...\n")
+                        continue
+                    else:
+                        print("\nOponente não quer continuar :/")
+                        break
+                elif resp == "n":
                     break
                 else:
-                    print("Jogada do oponente:")
-                    self.gerencia_jogadas(dados.decode('utf-8').split(','), self.oponente)
-                    self.vez = self.voce
-        
+                    print("Não entendi :/")
+                    continue
+            
         jogador.close()
             
     def instrucoes(self):
@@ -170,3 +186,17 @@ class Game:
                 self.vitoria = True
                 return True
         return False
+    
+    def carregar_quadro(self):
+        self.quadro.clear()
+        self.quadro = [[[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
+                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
+                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]], 
+                       [[" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "], [" ", " ", " ", " "]]]
+    
+    def novo_jogo(self):
+        self.vitoria = False
+        self.vencedor = None
+        self.velha = False
+        self.contador = 0
+        self.carregar_quadro()
