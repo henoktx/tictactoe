@@ -13,10 +13,9 @@ class Jogo_Conexao:
         print("\nIniciando servidor...")
         threading.Thread(target=self.recebe_notifica).start()
         
-        endereco = socket.gethostbyname(socket.gethostname())
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind((endereco, 7000))
-        
+        server.bind(('0.0.0.0', 7000))
+
         server.listen(1)
         
         cliente, cliente_end = server.accept()
