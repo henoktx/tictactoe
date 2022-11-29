@@ -57,7 +57,8 @@ class Game:
                 resp = input("\nDeseja iniciar um novo jogo?(s/n) ")
                 if resp == "s":
                     jogador.send("s".encode("utf-8"))
-                    if jogador.recv(4092).decode("utf-8") == "s":
+                    print("Aguardando resposta do oponente...")
+                    if jogador.recv(1024).decode("utf-8") == "s":
                         os.system("clear")
                         self.novo_jogo()
                         print("Novo jogo começando...\n")
@@ -66,6 +67,7 @@ class Game:
                         print("\nOponente não quer continuar :/")
                         break
                 elif resp == "n":
+                    jogador.send("n".encode("utf-8"))
                     break
                 else:
                     print("Não entendi :/")
