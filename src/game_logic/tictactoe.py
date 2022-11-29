@@ -75,13 +75,13 @@ class Game:
             
     def instrucoes(self):
         print("\nInstruções:\n")
-        print("\t→ Use sempre as jogadas no formato 'quadro,linha,coluna'\n")
-        print("\t→ Sempre quando for contar comece pelo 0\n")
-        print("\t→ Ganha quem colocar 4 marcadares horizontalmente, ou verticalmente, ou diagonalmente") 
-        print("\tno mesmo quadro ou combinando-os em sequencia, ou na mesma posicao em quadros diferentes\n")
+        print("\t→ Use sempre as jogadas no formato 'quadro,linha,coluna' (sem espaços entre as vírgulas)\n")
+        print("\t→ Sempre quando for contar um quadro, linha ou coluna, inicie pelo 0\n")
+        print("\t→ Ganha quem colocar 4 marcadores horizontalmente, ou verticalmente, ou diagonalmente") 
+        print("\tno mesmo quadro ou combinando-os em sequencia entre diferentes quadros, ou na mesma posicao em quadros diferentes\n")
         print("\t→ Bom jogo!\n") 
             
-    def jogada_valida(self, jogada):
+    def jogada_valida(self, jogada):    
         try:
             quadro = int(jogada[0])
             linha = int(jogada[1])
