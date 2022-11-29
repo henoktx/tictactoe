@@ -45,12 +45,13 @@ class Game:
                         print("Jogada inválida :|\n")
                 else:
                     dados = jogador.recv(4092)
+                    jogada_oponente = dados.decode('utf-8')
                     if not dados:
                         print("Vixe!")
                         break
                     else:
-                        print("Jogada do oponente:")
-                        self.gerencia_jogadas(dados.decode('utf-8').split(','), self.oponente)
+                        print(f"Jogada do oponente: {jogada_oponente}")
+                        self.gerencia_jogadas(jogada_oponente.split(","), self.oponente)
                         self.vez = self.voce
             else:
                 resp = input("\nDeseja iniciar um novo jogo?(s/n) ")
@@ -173,7 +174,7 @@ class Game:
                 self.vitoria = True
                 return True
             if self.quadro[quadro][0][3] == self.quadro[quadro][1][2] == self.quadro[quadro][2][1] == self.quadro[quadro][3][0] != " ":
-                self.vencedor = self.quadro[quadro][0][0]
+                self.vencedor = self.quadro[quadro][0][3]
                 self.vitoria = True
                 return True
             
@@ -182,7 +183,7 @@ class Game:
                 self.vitoria = True
                 return True
         if self.quadro[0][0][3] == self.quadro[1][1][2] == self.quadro[2][2][1] == self.quadro[3][3][0] != " ":
-                self.vencedor = self.quadro[0][3][0]
+                self.vencedor = self.quadro[0][0][3]
                 self.vitoria = True
                 return True
         return False
