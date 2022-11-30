@@ -14,7 +14,7 @@ class Jogo_Conexao:
         threading.Thread(target=self.recebe_notifica).start()
         
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind(('0.0.0.0', 7000))
+        server.bind(('', 7000))
 
         server.listen(1)
         
@@ -41,6 +41,7 @@ class Jogo_Conexao:
                 continue
         
         cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        cliente.bind(('', 7002))
         cliente.connect((self.server_info, 7000))
                 
         threading.Thread(target=other.handle_conexao, args=(cliente,)).start()
@@ -71,6 +72,7 @@ class Jogo_Conexao:
         
         cliente.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         cliente.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        cliente.bind(('', 7001))
         
         threading.Thread(target=self.verifica_mensagem_recebida_cliente, args=(cliente,)).start()
         
