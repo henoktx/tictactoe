@@ -1,6 +1,7 @@
 from connection import game_connection
 import socket
 import os
+import platform
 
 class Game:
     
@@ -41,7 +42,7 @@ class Game:
                     
                     if self.jogada_valida(jogada_processada):
                         jogador.send(jogada.encode('utf-8'))
-                        os.system("clear")
+                        self.limpa_terminal()
                         self.gerencia_jogadas(jogada_processada, self.voce)
                         self.vez = self.oponente
                     else:
@@ -65,6 +66,7 @@ class Game:
                     if jogador.recv(1024).decode("utf-8") == "s":
                         os.system("clear")
                         self.novo_jogo()
+                        self.instrucoes()
                         print("Novo jogo começando...\n")
                         continue
                     else:
@@ -215,3 +217,13 @@ class Game:
         self.velha = False
         self.contador = 0
         self.carregar_quadro()
+        
+    def limpa_terminal(self):
+        sistema = platform.system()
+        
+        if sistema == "Windows":
+            os.system("cls")
+        elif sistema == "Linux":
+            os.system("clear")
+        else:
+            return
