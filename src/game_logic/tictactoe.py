@@ -38,7 +38,6 @@ class Game:
                     jogada = input("Faça uma jogada (quadro,linha,coluna): ")
                     
                     jogada_processada = self.processa_jogada(jogada)
-                    print(jogada_processada)
                     
                     if self.jogada_valida(jogada_processada):
                         jogador.send(jogada.encode('utf-8'))
@@ -90,12 +89,13 @@ class Game:
         print("\t→ Bom jogo!\n") 
             
     def processa_jogada(self, jogada):
-        jogada_processada = jogada.split(',')
-        
-        for i in range(len(jogada_processada)):
-            jogada_processada[i] = (int(jogada_processada[i]) - 1) 
-            
-        return jogada_processada        
+        try:
+            jogada_processada = jogada.split(',')
+            for i in range(len(jogada_processada)):
+                jogada_processada[i] = (int(jogada_processada[i]) - 1) 
+            return jogada_processada        
+        except:   
+            exit
             
     def jogada_valida(self, jogada):    
         try:
