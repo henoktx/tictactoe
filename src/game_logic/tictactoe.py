@@ -34,24 +34,28 @@ class Game:
         while True:
             if not self.vitoria | self.velha:    
                 if self.vez == self.voce:
-                    jogada = input("Faça uma jogada (quadro, linha, coluna): ")
+                    jogada = input("Faça uma jogada (quadro,linha,coluna): ")
                     
-                    if self.jogada_valida(jogada.split(',')):
+                    jogada_processada = self.processa_jogada(jogada)
+                    print(jogada_processada)
+                    
+                    if self.jogada_valida(jogada_processada):
                         jogador.send(jogada.encode('utf-8'))
                         os.system("clear")
-                        self.gerencia_jogadas(jogada.split(','), self.voce)
+                        self.gerencia_jogadas(jogada_processada, self.voce)
                         self.vez = self.oponente
                     else:
                         print("Jogada inválida :|\n")
                 else:
                     dados = jogador.recv(4092)
                     jogada_oponente = dados.decode('utf-8')
+                    jogada_oponente_processada = self.processa_jogada(jogada_oponente)
                     if not dados:
                         print("Vixe!")
                         break
                     else:
                         print(f"Jogada do oponente: {jogada_oponente}")
-                        self.gerencia_jogadas(jogada_oponente.split(","), self.oponente)
+                        self.gerencia_jogadas(jogada_oponente_processada, self.oponente)
                         self.vez = self.voce
             else:
                 resp = input("\nDeseja iniciar um novo jogo?(s/n) ")
@@ -78,10 +82,18 @@ class Game:
     def instrucoes(self):
         print("\nInstruções:\n")
         print("\t→ Use sempre as jogadas no formato 'quadro,linha,coluna' (sem espaços entre as vírgulas)\n")
-        print("\t→ Sempre quando for contar um quadro, linha ou coluna, inicie pelo 0\n")
+        print("\t→ Sempre quando for contar um quadro, linha ou coluna, inicie pelo 1\n")
         print("\t→ Ganha quem colocar 4 marcadores horizontalmente, ou verticalmente, ou diagonalmente") 
         print("\tno mesmo quadro ou combinando-os em sequencia entre diferentes quadros, ou na mesma posicao em quadros diferentes\n")
         print("\t→ Bom jogo!\n") 
+            
+    def processa_jogada(self, jogada):
+        jogada_processada = jogada.split(',')
+        
+        for i in range(len(jogada_processada)):
+            jogada_processada[i] = (int(jogada_processada[i]) - 1) 
+            
+        return jogada_processada        
             
     def jogada_valida(self, jogada):    
         try:
@@ -89,7 +101,7 @@ class Game:
             linha = int(jogada[1])
             coluna = int(jogada[2])
             
-            if quadro > 3 | linha > 3 | coluna > 3:
+            if quadro > 4 | quadro <= 0 | linha > 4 | linha <= 0 | coluna > 4 | coluna <= 0:
                 return False
             elif self.quadro[int(jogada[0])][int(jogada[1])][int(jogada[2])] != " ":
                 return False
