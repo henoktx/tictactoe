@@ -33,7 +33,7 @@ class Game:
         self.instrucoes()
         
         while True:
-            if not self.vitoria | self.velha:    
+            if not self.vitoria or self.velha:    
                 if self.vez == self.voce:
                     jogada = input("Faça uma jogada (quadro,linha,coluna): ")
                     
@@ -103,7 +103,7 @@ class Game:
             linha = int(jogada[1])
             coluna = int(jogada[2])
             
-            if quadro > 4 | quadro <= 0 | linha > 4 | linha <= 0 | coluna > 4 | coluna <= 0:
+            if quadro > 4 or quadro <= 0 or linha > 4 or linha <= 0 or coluna > 4 or coluna <= 0:
                 return False
             elif self.quadro[int(jogada[0])][int(jogada[1])][int(jogada[2])] != " ":
                 return False
