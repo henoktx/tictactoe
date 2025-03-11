@@ -12,7 +12,7 @@ git clone git@github.com:henoktx/tictactoe.git
 2. Após isso, vá para a pasta e execute o comando:
 
 ```
-uv src/main.py
+uv run src/main.py
 ```
 3. Você poderá escolher entre hostear um servidor ou se conectar a um presente na rede.
 
