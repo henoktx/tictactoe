@@ -6,6 +6,7 @@ from network.server import GameServer
 from network.discovery import NetworkDiscovery, DiscorveyClient
 import threading
 
+
 class GameController:
     def __init__(self):
         self.game = TicTacToe3D()
@@ -25,7 +26,7 @@ class GameController:
 
         self.server = GameServer()
         threading.Thread(target=self.server.start).start()
-        
+
         self.network_discovery.start_server_discovery()
 
         self.server.ready.wait()
@@ -48,7 +49,7 @@ class GameController:
             self._game_loop()
         else:
             self.view.show_message("Falha na conexão")
-        
+
     def _game_loop(self):
         try:
             self.opponent_connected.wait()
@@ -84,9 +85,11 @@ class GameController:
 
     def _handle_remote_turn(self):
         self.view.show_message("Aguardando jogada do oponente...")
-        while self.game.current_player != self.player_symbol and not self.game.game_over:
+        while (
+            self.game.current_player != self.player_symbol and not self.game.game_over
+        ):
             time.sleep(0.1)
-    
+
     def _handle_client(self, client_sock):
         self.connection = client_sock
         self.player_symbol = "X"
@@ -127,15 +130,15 @@ class GameController:
             self.view.show_message("Você perdeu!")
         else:
             self.view.show_message("Deu velha!")
-        
+
         while True:
             resp = input("Jogar novamente? (s/n): ").lower()
-            if resp == 's':
+            if resp == "s":
                 if self.connection:
                     self.connection.send(b"RESTART")
                 self._reset_game()
                 break
-            elif resp == 'n':
+            elif resp == "n":
                 if self.connection:
                     self.connection.send(b"QUIT")
                 self._cleanup()
@@ -159,7 +162,7 @@ class GameController:
             except:
                 pass
         self.running = False
-    
+
     def _reset_game(self):
         self.game.reset_game()
         self.opponent_connected.clear()

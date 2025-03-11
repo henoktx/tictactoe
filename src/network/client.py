@@ -1,5 +1,6 @@
 import socket
 
+
 class GameClient:
     def __init__(self, server_ip, server_port=7000):
         self.server_ip = server_ip
@@ -16,7 +17,7 @@ class GameClient:
         except Exception as e:
             print(f"Erro ao conectar: {e}")
             return False
-    
+
     def disconnect(self):
         try:
             self.socket.send(b"QUIT")

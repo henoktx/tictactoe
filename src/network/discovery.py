@@ -2,6 +2,7 @@ import socket
 import threading
 import time
 
+
 class NetworkDiscovery:
     def __init__(self):
         self._running = False
@@ -36,7 +37,7 @@ class DiscorveyClient:
 
     def find_servers(self):
         servers = []
-        
+
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             sock.settimeout(self.timeout)
@@ -51,5 +52,5 @@ class DiscorveyClient:
                         servers.append(addr[0])
                 except socket.timeout:
                     break
-        
+
         return servers

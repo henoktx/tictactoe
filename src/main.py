@@ -1,5 +1,6 @@
 from game.controller import GameController
 
+
 def main():
     controller = GameController()
     controller.view.clear()
@@ -23,6 +24,7 @@ def main():
             print("Nenhum servidor encontrado")
     else:
         print("Opção inválida")
+
 
 if __name__ == "__main__":
     main()

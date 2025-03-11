@@ -1,6 +1,7 @@
 import socket
 import threading
 
+
 class GameServer:
     def __init__(self, host="", port=7000):
         self.host = host
